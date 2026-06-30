@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Schaden-Check · Nur 'ne Schramme? Wir checken es für dich.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #12141A;
+    --surface:     #1A1D26;
+    --blue:        #0EA5E9;
+    --blue-dim:    #0369A1;
+    --blue-glow:   rgba(14,165,233,0.10);
+    --blue-border: rgba(14,165,233,0.22);
+    --green:       #4ade80;
+    --amber:       #fbbf24;
+    --red:         #f87171;
+    --text:        #F8FAFC;
+    --text-muted:  #8896A8;
+    --border:      rgba(255,255,255,0.08);
+  }
+
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .slider { display: flex; width: 500%; height: 100%; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .screen { width: 20%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem 0.75rem; flex-shrink: 0; }
+  .logo { display: flex; align-items: center; gap: 0.5rem; }
+  .logo-mark { width: 26px; height: 26px; background: var(--blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .logo-text { font-size: 0.85rem; font-weight: 700; }
+  .logo-text span { color: var(--blue); font-weight: 400; }
+  .dots { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+  .dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
+
+  .content { flex: 1; padding: 1.5rem 1.5rem 0; display: flex; flex-direction: column; overflow: hidden; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--blue);
+    background: var(--blue-glow); border: 1px solid var(--blue-border);
+    padding: 0.2rem 0.6rem; border-radius: 100px;
+    margin-bottom: 1rem; align-self: flex-start;
+  }
+  .badge.amber { color: var(--amber); background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.25); }
+  .badge.green { color: var(--green); background: rgba(74,222,128,0.1);  border-color: rgba(74,222,128,0.25); }
+
+  h1 { font-size: clamp(1.5rem, 4.5vw, 2.3rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 0.6rem; }
+  h1 .accent { color: var(--blue); }
+  h1 .amber  { color: var(--amber); }
+  h1 .green  { color: var(--green); }
+
+  .lead { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 1.25rem; font-weight: 300; }
+
+  .cards { display: flex; flex-direction: column; gap: 0.6rem; flex: 1; overflow: hidden; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; display: flex; align-items: flex-start; gap: 0.75rem; }
+  .card.blue-border  { border-color: var(--blue-border); }
+  .card.green-border { border-color: rgba(74,222,128,0.25); }
+  .card.amber-border { border-color: rgba(251,191,36,0.25); }
+  .card-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .card-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .card-text  { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+  .card-text strong { color: var(--text); }
+
+  .math-box { background: var(--surface); border: 1px solid var(--blue-border); border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 0.75rem; }
+  .math-row { display: flex; align-items: center; justify-content: space-between; padding: 0.35rem 0; font-size: 0.82rem; border-bottom: 1px solid var(--border); }
+  .math-row:last-child { border-bottom: none; }
+  .math-row.total { font-weight: 700; font-size: 0.9rem; margin-top: 0.2rem; }
+  .math-label { color: var(--text-muted); }
+  .math-val   { font-weight: 600; color: var(--text); }
+  .math-val.amber { color: var(--amber); }
+  .math-val.green { color: var(--green); }
+
+  .bottom-bar { padding: 1rem 1.5rem 1.5rem; flex-shrink: 0; }
+  .btn-next { width: 100%; padding: 0.9rem; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .btn-next:hover { background: var(--blue-dim); }
+  .btn-next.green-btn { background: #16a34a; }
+  .skip-link { display: block; text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem; cursor: pointer; text-decoration: none; }
+
+  .choice-cards { display: flex; flex-direction: column; gap: 0.75rem; }
+  .choice-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; text-decoration: none; color: inherit; display: flex; align-items: center; justify-content: space-between; transition: border-color 0.2s; }
+  .choice-card.primary { border-color: var(--blue-border); background: rgba(14,165,233,0.05); }
+  .choice-card-left { display: flex; align-items: center; gap: 0.75rem; }
+  .choice-icon { font-size: 1.5rem; }
+  .choice-title { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.15rem; }
+  .choice-sub   { font-size: 0.75rem; color: var(--text-muted); }
+  .choice-arrow { color: var(--blue); font-size: 1rem; }
+
+  .note { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; line-height: 1.5; }
+  .note span { color: var(--green); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+  <!-- ══════ SCREEN 1: Die Schramme ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-mark">🔍</div>
+        <div class="logo-text">Schaden<span>·Check</span></div>
+      </div>
+      <div class="dots">
+        <div class="dot active" id="d1"></div>
+        <div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div>
+        <div class="dot" id="d4"></div>
+        <div class="dot" id="d5"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="badge">✦ Entspannt prüfen</div>
+      <h1>Nur 'ne Schramme?<br><span class="accent">Kein Problem.</span></h1>
+      <p class="lead">Wir checken es für dich — Kosten, Wertminderung und ob sich Reparieren lohnt. In 60 Sekunden.</p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-icon">🤔</div>
+          <div>
+            <div class="card-title">Kennst du das?</div>
+            <div class="card-text">Ein Kratzer, eine kleine Delle — man redet sich ein <strong>"ist doch nicht schlimm"</strong>. Aber stimmt das wirklich?</div>
+          </div>
+        </div>
+        <div class="card blue-border">
+          <div class="card-icon">📸</div>
+          <div>
+            <div class="card-title">Was wir checken</div>
+            <div class="card-text">Foto hochladen — KI schätzt <strong>Reparaturkosten</strong> und <strong>Wertminderung</strong> wenn du es lässt.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-icon">⚖️</div>
+          <div>
+            <div class="card-title">Deine Entscheidung</div>
+            <div class="card-text">Mit echten Zahlen entscheidest du klar: <strong>reparieren oder leben damit.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(1)">Warum lohnt sich der Check? →</button>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 2: Der Selbstbetrug ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-mark">🔍</div>
+        <div class="logo-text">Schaden<span>·Check</span></div>
+      </div>
+      <div class="dots">
+        <div class="dot" id="d1b"></div>
+        <div class="dot active" id="d2b"></div>
+        <div class="dot" id="d3b"></div>
+        <div class="dot" id="d4b"></div>
+        <div class="dot" id="d5b"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="badge amber">Die Wahrheit</div>
+      <h1>Schrammen werden<br><span class="amber">selten kleiner.</span></h1>
+      <p class="lead">Wenn man genau hinschaut, sind "kleine Schrammen" oft größer als gedacht.</p>
+
+      <div class="cards">
+        <div class="card amber-border">
+          <div class="card-icon">👀</div>
+          <div>
+            <div class="card-title">Erster Blick täuscht</div>
+            <div class="card-text">Was wie ein Kratzer aussieht, kann <strong>Lackschäden bis zum Grundmaterial</strong> sein — nur sichtbar bei genauer Prüfung.</div>
+          </div>
+        </div>
+        <div class="card amber-border">
+          <div class="card-icon">💰</div>
+          <div>
+            <div class="card-title">Unsichtbare Wertminderung</div>
+            <div class="card-text">Auch unreparierte "Kleinigkeiten" mindern den <strong>Wiederverkaufswert</strong> — oft mehr als die Reparatur kosten würde.</div>
+          </div>
+        </div>
+        <div class="card blue-border">
+          <div class="card-icon">✅</div>
+          <div>
+            <div class="card-title">Die Lösung: Klarheit statt Vermutung</div>
+            <div class="card-text">Mit einer <strong>echten Einschätzung</strong> triffst du die Entscheidung mit Zahlen, nicht mit Bauchgefühl.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(2)">Weiter — Was kostet das? →</button>
+      <span class="skip-link" onclick="goTo(0)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 3: Die Rechnung — Eyecatcher ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-mark">🔍</div>
+        <div class="logo-text">Schaden<span>·Check</span></div>
+      </div>
+      <div class="dots">
+        <div class="dot" id="d1c"></div>
+        <div class="dot" id="d2c"></div>
+        <div class="dot active" id="d3c"></div>
+        <div class="dot" id="d4c"></div>
+        <div class="dot" id="d5c"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="badge green">Der Vergleich</div>
+      <h1>€ 5,99 statt<br><span class="green">bis zu 80 € Kostenvoranschlag.</span></h1>
+      <p class="lead">Ein klassischer Kostenvoranschlag in der Werkstatt kostet — der Schaden-Check liefert dir die gleiche Klarheit für einen Bruchteil.</p>
+
+      <div class="math-box">
+        <div class="math-row">
+          <span class="math-label">🏭 Kostenvoranschlag Werkstatt</span>
+          <span class="math-val">50 – 80 €</span>
+        </div>
+        <div class="math-row">
+          <span class="math-label">⏱️ Termin vereinbaren & hinfahren</span>
+          <span class="math-val">1–2 Stunden</span>
+        </div>
+        <div class="math-row total">
+          <span class="math-label">🟢 Schaden-Check</span>
+          <span class="math-val green">5,99 €</span>
+        </div>
+      </div>
+
+      <div class="card blue-border">
+        <div class="card-icon">💎</div>
+        <div>
+          <div class="card-title">Der echte Mehrwert</div>
+          <div class="card-text">Du bekommst nicht nur die Reparaturkosten — sondern auch wie viel die Schramme deinen <strong>Wiederverkaufswert</strong> mindert. Das macht die Entscheidung erst wirklich klar.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(3)">Weiter — Wie funktioniert's? →</button>
+      <span class="skip-link" onclick="goTo(1)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 4: So einfach ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-mark">🔍</div>
+        <div class="logo-text">Schaden<span>·Check</span></div>
+      </div>
+      <div class="dots">
+        <div class="dot" id="d1d"></div>
+        <div class="dot" id="d2d"></div>
+        <div class="dot" id="d3d"></div>
+        <div class="dot active" id="d4d"></div>
+        <div class="dot" id="d5d"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="badge green">So einfach</div>
+      <h1>3 Schritte —<br><span class="green">fertig in 60 Sek.</span></h1>
+      <p class="lead">Kein Fachwissen nötig. Nur ein Foto vom Schaden.</p>
+
+      <div class="cards">
+        <div class="card blue-border">
+          <div class="card-icon">1️⃣</div>
+          <div>
+            <div class="card-title">Foto hochladen</div>
+            <div class="card-text">Mach ein Foto vom Schaden — Kratzer, Delle oder Lackabplatzer, egal was.</div>
+          </div>
+        </div>
+        <div class="card blue-border">
+          <div class="card-icon">2️⃣</div>
+          <div>
+            <div class="card-title">KI analysiert</div>
+            <div class="card-text">Reparaturkosten und Wertminderung werden geschätzt — basierend auf Schadensbild und Fahrzeugdaten.</div>
+          </div>
+        </div>
+        <div class="card green-border">
+          <div class="card-icon">3️⃣</div>
+          <div>
+            <div class="card-title">Klare Empfehlung erhalten</div>
+            <div class="card-text"><strong>Reparieren oder lassen?</strong> Mit echten Zahlen statt Bauchgefühl.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(4)">Weiter — Jetzt starten →</button>
+      <span class="skip-link" onclick="goTo(2)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 5: CTA ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo">
+        <div class="logo-mark">🔍</div>
+        <div class="logo-text">Schaden<span>·Check</span></div>
+      </div>
+      <div class="dots">
+        <div class="dot" id="d1e"></div>
+        <div class="dot" id="d2e"></div>
+        <div class="dot" id="d3e"></div>
+        <div class="dot" id="d4e"></div>
+        <div class="dot active" id="d5e"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="badge green">Los geht's</div>
+      <h1>Bereit für<br><span class="green">deinen Check?</span></h1>
+      <p class="lead">Sieh dir zuerst 3 echte Beispiele an — oder starte direkt deinen Check.</p>
+
+      <div class="choice-cards">
+        <a href="demo.html" class="choice-card primary">
+          <div class="choice-card-left">
+            <div class="choice-icon">👁</div>
+            <div>
+              <div class="choice-title">Demo ansehen</div>
+              <div class="choice-sub">3 echte Beispiele mit Wertminderung</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+        <a href="check.html" class="choice-card">
+          <div class="choice-card-left">
+            <div class="choice-icon">🔍</div>
+            <div>
+              <div class="choice-title">Direkt zum Check</div>
+              <div class="choice-sub">Vollanalyse € 5,99</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="note">
+        <span>✓ Keine Anmeldung</span> · Kein Abo · Einmalig bezahlen<br>
+        Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--blue);text-decoration:none;">Mein-Auto-Assistent.de</a>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <span class="skip-link" onclick="goTo(3)">← Zurück</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var current = 0;
+var total = 5;
+
+function goTo(n) {
+  current = n;
+  document.getElementById('slider').style.transform = 'translateX(-' + (n * 20) + '%)';
+  updateDots();
+}
+
+function updateDots() {
+  var suffixes = ['', 'b', 'c', 'd', 'e'];
+  for (var s = 0; s < suffixes.length; s++) {
+    for (var i = 1; i <= 5; i++) {
+      var el = document.getElementById('d' + i + suffixes[s]);
+      if (el) { el.className = 'dot' + (i - 1 === current ? ' active' : ''); }
+    }
+  }
+}
+
+var startX = 0;
+document.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+document.addEventListener('touchend', function(e) {
+  var diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0 && current < total - 1) goTo(current + 1);
+    if (diff < 0 && current > 0) goTo(current - 1);
+  }
+});
+</script>
+
+</body>
+</html>

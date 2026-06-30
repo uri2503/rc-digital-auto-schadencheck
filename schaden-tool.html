@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Schaden-Check · Mein Auto-Assistent</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root {
+  --black:#12141A; --ink:#F8FAFC; --surface:#1A1D26; --card:#20242F;
+  --border:rgba(255,255,255,0.07); --muted:rgba(255,255,255,0.05);
+  --white:#F8FAFC; --grey:#8896A8; --grey-light:#8896A8;
+  --primary:#0EA5E9; --primary-dim:rgba(14,165,233,.10); --primary-glow:rgba(14,165,233,.22);
+  --green:#4ade80; --green-dim:rgba(74,222,128,.10);
+  --amber:#fbbf24; --amber-dim:rgba(251,191,36,.10);
+  --red:#f87171; --red-dim:rgba(248,113,113,.10);
+  --font-display:'Inter',-apple-system,sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  --r:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+
+.brand-bar{display:flex;height:4px;width:100%}
+.brand-bar span{flex:1}
+.brand-bar .b1{background:#0EA5E9}
+.brand-bar .b2{background:#0369A1}
+.brand-bar .b3{background:#0EA5E9}
+
+.container{max-width:680px;margin:0 auto;padding:0 20px}
+section{padding:32px 0}
+
+nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
+.nav-logo{width:28px;height:28px;background:var(--primary);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.nav-text{font-size:14px;font-weight:700}
+.nav-text span{color:var(--primary);font-weight:400}
+
+.progress-track{display:flex;align-items:center;gap:0;margin-bottom:32px}
+.progress-step{display:flex;align-items:center;gap:8px}
+.progress-step .num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;transition:all .3s}
+.progress-step .num.active{background:var(--primary);color:#12141A}
+.progress-step .num.done{background:var(--green);color:#12141A}
+.progress-step .num.inactive{background:rgba(255,255,255,0.06);color:var(--grey)}
+.progress-step .stxt{font-size:12px;color:var(--grey);white-space:nowrap}
+.progress-step .stxt.active{color:var(--white);font-weight:500}
+.progress-line{flex:1;height:1px;background:var(--border);margin:0 8px;min-width:16px}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px}
+.card-title{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-title::before{content:'';display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px;flex-shrink:0}
+.card-hint{font-size:12.5px;color:var(--grey);margin-bottom:18px;padding-left:11px}
+
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:12px;color:var(--grey-light);font-weight:500}
+.field input,.field select{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:10px 12px;border-radius:6px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s}
+.field input:focus,.field select:focus{border-color:var(--primary)}
+.field input::placeholder{color:var(--grey)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.pill-group{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:9px 16px;font-size:13px;color:var(--grey-light);cursor:pointer;transition:all .15s;user-select:none}
+.pill:hover{border-color:var(--primary);color:var(--white)}
+.pill.active{background:var(--primary-dim);border-color:var(--primary);color:var(--primary)}
+.pill input{display:none}
+
+.upload-zone{border:1.5px dashed var(--border);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--surface)}
+.upload-zone:hover{border-color:var(--primary);background:var(--primary-dim)}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-icon{font-size:28px;margin-bottom:8px;opacity:.6}
+.upload-text{font-size:13px;color:var(--grey)}
+.upload-text strong{color:var(--grey-light)}
+.img-preview{margin-top:12px;display:none;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.img-preview .thumb{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:var(--surface);border:1px solid var(--border)}
+.img-preview .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.img-preview .thumb .thumb-remove{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(28,39,51,.75);color:#fff;border:none;font-size:12px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:8px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .18s;text-decoration:none}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0369A1;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-ghost{background:transparent;color:var(--grey-light);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--grey);color:var(--white)}
+.btn-full{width:100%}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ai-box{background:var(--primary-dim);border:1px solid var(--primary-glow);border-radius:var(--r);padding:14px 16px;font-size:13px;line-height:1.7;color:var(--grey-light);display:none;margin-top:14px}
+.ai-box strong{color:var(--primary);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
+
+/* ── RESULT ── */
+#result{display:none}
+.result-header{text-align:center;padding:24px 0 20px}
+.result-header .label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey);font-weight:600;margin-bottom:10px}
+.result-header h2{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,2.1rem);line-height:1.15;font-weight:800}
+
+/* zentrale Vergleichsbox */
+.compare-box{background:var(--card);border:1px solid var(--primary-glow);border-radius:var(--r);padding:22px;margin-bottom:16px}
+.compare-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.compare-row:last-child{border-bottom:none;padding-top:14px;margin-top:4px;border-top:1px solid var(--primary-glow)}
+.compare-row .key{color:var(--grey-light)}
+.compare-row .val{font-weight:700;font-size:16px}
+.compare-row .val.cost{color:var(--amber)}
+.compare-row .val.loss{color:var(--red)}
+.compare-row .val.save{color:var(--green);font-size:22px}
+
+.recommend-box{border-radius:var(--r);padding:20px;margin-bottom:16px}
+.recommend-box.repair{background:var(--green-dim);border:1.5px solid var(--green)}
+.recommend-box.keep{background:var(--amber-dim);border:1.5px solid var(--amber)}
+.recommend-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.recommend-box.repair .recommend-label{color:var(--green)}
+.recommend-box.keep .recommend-label{color:var(--amber)}
+.recommend-text{font-size:14.5px;line-height:1.7;color:var(--white)}
+.recommend-text strong{color:inherit}
+
+.breakdown{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:16px}
+.breakdown h3{font-family:var(--font-display);font-size:13px;letter-spacing:.06em;color:var(--grey);text-transform:uppercase;margin-bottom:14px}
+.breakdown p{font-size:13.5px;color:var(--grey-light);line-height:1.7}
+
+.disclaimer{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;font-size:11.5px;color:var(--grey);line-height:1.7;margin-top:16px}
+.disclaimer strong{color:var(--grey-light)}
+
+.action-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.action-row .btn{flex:1}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--border);border-left:3px solid var(--primary);color:var(--white);padding:12px 20px;border-radius:6px;font-size:13px;z-index:999;transition:transform .3s;white-space:nowrap;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:600px){
+  .field-row{grid-template-columns:1fr}
+  .card{padding:18px}
+  .progress-step .stxt{display:none}
+  .breakdown,.compare-box{padding:16px}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div class="brand-bar"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
+
+<nav>
+  <div class="nav-logo">🔍</div>
+  <div class="nav-text">Schaden<span>·Check</span></div>
+</nav>
+
+<div class="container">
+
+  <!-- STEP 1: SCHADEN -->
+  <section id="stepSection">
+    <div class="progress-track">
+      <div class="progress-step"><div class="num active" id="p1">1</div><span class="stxt active">Schaden</span></div>
+      <div class="progress-line"></div>
+      <div class="progress-step"><div class="num inactive" id="p2">2</div><span class="stxt" id="p2t">Fahrzeug</span></div>
+      <div class="progress-line"></div>
+      <div class="progress-step"><div class="num inactive" id="p3">3</div><span class="stxt">Ergebnis</span></div>
+    </div>
+
+    <div id="step1">
+      <div class="card">
+        <div class="card-title">Schadensfoto</div>
+        <div class="card-hint">Foto hochladen, KI schätzt den Schaden — oder direkt manuell eintragen.</div>
+
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept="image/*" multiple onchange="handlePhoto(event)">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text"><strong>1–3 Fotos des Schadens</strong> auswählen oder ablegen</div>
+        </div>
+        <div class="img-preview" id="imgPreview" style="display:none"></div>
+
+        <div style="margin:18px 0 4px">
+          <div class="field" style="margin-bottom:0">
+            <label>Werkstatttyp</label>
+          </div>
+          <div class="pill-group" style="margin-top:10px">
+            <label class="pill active" id="wt_frei">
+              <input type="radio" name="werkstatt" value="frei" checked onchange="setWerkstatt(this)">
+              🔧 Freie Werkstatt
+            </label>
+            <label class="pill" id="wt_marke">
+              <input type="radio" name="werkstatt" value="marke" onchange="setWerkstatt(this)">
+              🏢 Markenwerkstatt
+            </label>
+          </div>
+        </div>
+
+        <div style="margin:14px 0 10px;display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:12px;color:var(--grey)">oder manuell eingeben</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+        </div>
+
+        <div class="field">
+          <label>Geschätzter Reparaturbetrag (€)</label>
+          <input type="number" id="schadenBetrag" placeholder="z.B. 280" min="0" oninput="syncManualInput()">
+        </div>
+
+        <div class="ai-box" id="aiBox">
+          <strong>KI-Einschätzung</strong>
+          <span id="aiText"></span>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;justify-content:flex-end">
+        <button class="btn btn-primary" onclick="goStep(2)">Weiter → Fahrzeug</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: FAHRZEUG -->
+    <div id="step2" style="display:none">
+      <div class="card">
+        <div class="card-title">Fahrzeugdaten</div>
+        <div class="card-hint">Hilft uns, die Wertminderung realistisch einzuschätzen.</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Marke & Modell</label>
+            <input type="text" id="fahrzeugModell" placeholder="z.B. BMW 1er">
+          </div>
+          <div class="field">
+            <label>Baujahr</label>
+            <input type="number" id="fahrzeugBaujahr" placeholder="z.B. 2020" min="1990" max="2026">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Aktueller Fahrzeugwert (€)</label>
+          <input type="number" id="fahrzeugWert" placeholder="z.B. 18000" min="0">
+        </div>
+
+        <div style="font-size:11px;color:var(--grey);margin-top:6px">
+          🔒 Dein Foto wird nur für die Analyse verwendet und nicht gespeichert.
+        </div>
+      </div>
+      <div style="margin-top:16px;display:flex;justify-content:space-between">
+        <button class="btn btn-ghost" onclick="goStep(1)">← Zurück</button>
+        <button class="btn btn-primary" onclick="berechne()" id="calcBtn">Check durchführen →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result">
+    <div class="result-header">
+      <div class="label">Deine Entscheidungshilfe</div>
+      <h2 id="resultHeadline">Reparieren oder lassen?</h2>
+    </div>
+
+    <div class="compare-box">
+      <div class="compare-row"><span class="key">🔧 Reparaturkosten</span><span class="val cost" id="resRepairCost">–</span></div>
+      <div class="compare-row"><span class="key">📉 Wertminderung wenn unrepariert</span><span class="val loss" id="resValueLoss">–</span></div>
+      <div class="compare-row"><span class="key" id="resCompareLabel">Differenz</span><span class="val save" id="resDiff">–</span></div>
+    </div>
+
+    <div class="recommend-box" id="recommendBox">
+      <div class="recommend-label" id="recommendLabel">EMPFEHLUNG</div>
+      <div class="recommend-text" id="recommendText"></div>
+    </div>
+
+    <div class="breakdown">
+      <h3>Im Detail</h3>
+      <p id="breakdownText"></p>
+    </div>
+
+    <div class="disclaimer">
+      <strong>Wichtiger Hinweis:</strong> Diese Berechnung ist eine unverbindliche Orientierungshilfe — kein Kostenvoranschlag, kein Gutachten. Tatsächliche Kosten können je nach Schadensumfang und Werkstatt abweichen.<br><br>
+      🔒 <strong>Datenschutz:</strong> Hochgeladene Fotos werden ausschließlich für die KI-Analyse verwendet und nicht gespeichert oder weitergegeben.
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-ghost" onclick="resetApp()">← Neuer Check</button>
+      <button class="btn btn-primary" onclick="exportPDF()">⬇ Als PDF speichern</button>
+    </div>
+  </section>
+
+</div>
+
+<footer style="padding:24px 20px;text-align:center;margin-top:8px;border-top:1px solid var(--border)">
+  <p style="font-size:12px;color:var(--grey)">Schaden-Check &nbsp;·&nbsp; <a href="impressum.html" style="color:var(--grey);text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="datenschutz.html" style="color:var(--grey);text-decoration:none">Datenschutz</a></p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPA_ANON_KEY = 'sb_publishable_v4kXJa0y-2EHsCFPqBFHfg_QvzKLnt2';
+
+const WERKSTATT = {
+  frei:  { label:'Freie Werkstatt', stundensatz:85,  faktor:1.0 },
+  marke: { label:'Markenwerkstatt', stundensatz:125, faktor:1.45 },
+};
+let currentWerkstatt = 'frei';
+
+function setWerkstatt(el) {
+  currentWerkstatt = el.value;
+  Object.keys(WERKSTATT).forEach(k => {
+    const pill = document.getElementById('wt_' + k);
+    if (pill) pill.classList.toggle('active', k === el.value);
+  });
+}
+
+let currentStep = 1;
+let aiSchadenBetrag = null;
+let photoBase64Arr = [];
+
+function goStep(n) {
+  if (n === 2) {
+    const w = document.getElementById('fahrzeugWert');
+  }
+  currentStep = n;
+  document.getElementById('step1').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('step2').style.display = n === 2 ? 'block' : 'none';
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('p'+i);
+    if (!el) return;
+    if (i < n) { el.className='num done'; el.textContent='✓'; }
+    else if (i === n) { el.className='num active'; el.textContent=i; }
+    else { el.className='num inactive'; el.textContent=i; }
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const MAX_FOTOS = 3;
+
+function handlePhoto(e) {
+  const files = Array.from(e.target.files).slice(0, MAX_FOTOS);
+  if (!files.length) return;
+  const preview = document.getElementById('imgPreview');
+  preview.innerHTML = '';
+  preview.style.display = 'grid';
+  photoBase64Arr = [];
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const dataUrl = ev.target.result;
+      const b64 = dataUrl.split(',')[1];
+      photoBase64Arr.push(b64);
+
+      const thumb = document.createElement('div');
+      thumb.className = 'thumb';
+      thumb.innerHTML = `<img src="${dataUrl}">`;
+      preview.appendChild(thumb);
+
+      if (photoBase64Arr.length === files.length) {
+        analyzePhoto();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function analyzePhoto() {
+  const aiBox = document.getElementById('aiBox');
+  aiBox.style.display = 'block';
+  document.getElementById('aiText').innerHTML = '<span class="spinner"></span> Analysiere Schaden...';
+
+  try {
+    const imageBlocks = photoBase64Arr.map(b64 => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } }));
+
+    const res = await fetch('https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/claude-proxy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPA_ANON_KEY
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: [
+            ...imageBlocks,
+            { type: 'text', text: `Du bist KFZ-Sachverständiger. Analysiere diesen Fahrzeugschaden (Kratzer, Delle, kleinerer Lackschaden) und antworte NUR in diesem JSON-Format ohne weitere Erklärungen:
+{"beschreibung":"Kurze Schadensbeschreibung inkl. Tiefe/Ausmaß (max 2 Sätze)","betrag_min":150,"betrag_max":300}
+
+Werkstatttyp: ${WERKSTATT[currentWerkstatt].label} (Stundensatz ~€${WERKSTATT[currentWerkstatt].stundensatz}/h).
+Das ist ein kleinerer Alltagsschaden (Parkrempler, Kratzer, kleine Delle) — keine Totalschäden oder große Unfälle. Schätze realistisch für Lackausbesserung, Spachteln, kleinere Dellenreparatur.` }
+          ]
+        }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || data.error);
+    const text = data.content?.map(c => c.text||'').join('') || '';
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    aiSchadenBetrag = parsed.betrag_max;
+    document.getElementById('schadenBetrag').value = parsed.betrag_max;
+    document.getElementById('aiText').innerHTML = `${parsed.beschreibung}<br><strong style="color:var(--white);font-size:15px;display:inline-block;margin-top:6px">≈ €${parsed.betrag_min}–${parsed.betrag_max}</strong>`;
+  } catch (err) {
+    document.getElementById('aiText').textContent = 'Analyse fehlgeschlagen — bitte Betrag manuell eintragen.';
+  }
+}
+
+function syncManualInput() { aiSchadenBetrag = null; }
+
+function berechne() {
+  const schaden = parseFloat(document.getElementById('schadenBetrag').value) || 0;
+  const fahrzeugWert = parseFloat(document.getElementById('fahrzeugWert').value) || 0;
+  const modell = document.getElementById('fahrzeugModell').value || 'dein Fahrzeug';
+
+  if (!schaden) { toast('Bitte Schadenbetrag eingeben'); return; }
+  if (!fahrzeugWert) { toast('Bitte Fahrzeugwert eingeben'); return; }
+
+  // Wertminderung: Branchendaumen — höherer Prozentsatz bei sichtbaren/relevanten Schäden
+  const ratio = schaden / fahrzeugWert;
+  const wmPct = ratio > 0.04 ? 0.022 : (ratio > 0.015 ? 0.018 : 0.014);
+  const wertminderung = Math.round(fahrzeugWert * wmPct * 10); // skaliert grob mit Schadenhöhe
+
+  // Realistischere Formel: Wertminderung ≈ 1.5-2x Reparaturkosten bei kleinen Schäden, gedeckelt
+  const wmFaktor = 1.7;
+  const finalWM = Math.round(Math.min(schaden * wmFaktor, fahrzeugWert * 0.08));
+
+  const diff = finalWM - schaden;
+  const repairWins = diff > 0;
+
+  document.getElementById('resRepairCost').textContent = '€' + schaden.toLocaleString('de');
+  document.getElementById('resValueLoss').textContent = '– €' + finalWM.toLocaleString('de');
+  document.getElementById('resCompareLabel').textContent = repairWins ? '💰 Du sparst durch Reparatur' : '💰 Reparatur kostet mehr als die Minderung';
+  document.getElementById('resDiff').textContent = (repairWins ? '' : '+ ') + '€' + Math.abs(diff).toLocaleString('de');
+  document.getElementById('resDiff').className = 'val ' + (repairWins ? 'save' : 'cost');
+
+  const box = document.getElementById('recommendBox');
+  const label = document.getElementById('recommendLabel');
+  const text = document.getElementById('recommendText');
+
+  if (repairWins) {
+    box.className = 'recommend-box repair';
+    label.textContent = '✅ EMPFEHLUNG: REPARIEREN';
+    text.innerHTML = `Bei ${modell} lohnt sich die Reparatur klar. Du sparst <strong>€${diff.toLocaleString('de')}</strong> gegenüber der Wertminderung beim späteren Verkauf.`;
+  } else {
+    box.className = 'recommend-box keep';
+    label.textContent = '🤔 EMPFEHLUNG: ABWÄGEN';
+    text.innerHTML = `Bei ${modell} ist die Wertminderung geringer als die Reparaturkosten. Wenn du das Fahrzeug noch lange fährst, kann Reparieren trotzdem sinnvoll sein — für den reinen Verkaufswert lohnt es sich knapp nicht.`;
+  }
+
+  document.getElementById('breakdownText').innerHTML =
+    `Reparaturkosten basierend auf ${WERKSTATT[currentWerkstatt].label} (~€${WERKSTATT[currentWerkstatt].stundensatz}/h). Wertminderung geschätzt auf Basis von Fahrzeugwert, Schadenhöhe und Sichtbarkeit des Schadens. Bei Verkauf oder Inzahlungnahme wirkt sich ein unreparierter Schaden meist stärker aus als die reinen Materialkosten — Käufer kalkulieren zusätzlichen Aufwand und Unsicherheit ein.`;
+
+  document.getElementById('stepSection').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetApp() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('stepSection').style.display = 'block';
+  document.getElementById('schadenBetrag').value = '';
+  document.getElementById('fahrzeugModell').value = '';
+  document.getElementById('fahrzeugBaujahr').value = '';
+  document.getElementById('fahrzeugWert').value = '';
+  document.getElementById('imgPreview').innerHTML = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('aiBox').style.display = 'none';
+  photoBase64Arr = [];
+  goStep(1);
+}
+
+function exportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(18);
+  doc.text('Schaden-Check Report', 20, 20);
+  doc.setFontSize(11);
+  doc.text('Reparaturkosten: ' + document.getElementById('resRepairCost').textContent, 20, 40);
+  doc.text('Wertminderung: ' + document.getElementById('resValueLoss').textContent, 20, 50);
+  doc.text(document.getElementById('recommendLabel').textContent, 20, 65);
+  const text = document.getElementById('recommendText').textContent;
+  const lines = doc.splitTextToSize(text, 170);
+  doc.text(lines, 20, 75);
+  doc.save('schaden-check-report.pdf');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+
+</body>
+</html>

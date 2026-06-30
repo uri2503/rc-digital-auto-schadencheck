@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Schaden-Check · Zahlung erfolgreich</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #12141A; --surface: #1A1D26;
+    --blue: #0EA5E9; --green: #4ade80;
+    --text: #F8FAFC; --text-muted: #8896A8;
+    --border: rgba(255,255,255,0.08);
+  }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; text-align: center; }
+  .success-icon { width: 72px; height: 72px; background: rgba(74,222,128,0.12); border: 2px solid rgba(74,222,128,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem; }
+  h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem; line-height: 1.15; }
+  .sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.65; max-width: 320px; }
+  .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 0.75rem; width: 100%; max-width: 360px; text-align: left; }
+  .info-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.3rem; }
+  .info-value { font-size: 0.85rem; font-weight: 600; color: var(--green); }
+  .btn { display: block; width: 100%; max-width: 360px; padding: 0.9rem; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; text-decoration: none; text-align: center; cursor: pointer; border: none; margin-top: 0.75rem; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .note { font-size: 0.72rem; color: var(--text-muted); margin-top: 1.25rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="success-icon">✓</div>
+<h1>Zahlung erfolgreich!<br>Dein Check ist freigeschaltet.</h1>
+<p class="sub">Du hast jetzt Zugang zur vollständigen Analyse mit Wertminderungs-Schätzung.</p>
+
+<div class="info-card">
+  <div class="info-label">Freigeschaltet</div>
+  <div class="info-value">✓ KI-Analyse · Wertminderung · Empfehlung · PDF-Report</div>
+</div>
+
+<a href="tool.html" class="btn btn-primary">Jetzt Check starten →</a>
+
+<div class="note">
+  Eine Bestätigungsmail wurde an deine E-Mail-Adresse gesendet.<br>
+  <a href="impressum.html" style="color:var(--text-muted);">Impressum</a> ·
+  <a href="datenschutz.html" style="color:var(--text-muted);">Datenschutz</a>
+</div>
+
+<script>
+var params = new URLSearchParams(window.location.search);
+var sessionId = params.get('session_id');
+if (sessionId) { localStorage.setItem('schadencheck_paid', sessionId); }
+</script>
+
+</body>
+</html>

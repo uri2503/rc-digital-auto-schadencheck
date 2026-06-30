@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Schaden-Check · Freischalten</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #12141A; --surface: #1A1D26;
+    --blue: #0EA5E9; --blue-dim: #0369A1;
+    --blue-glow: rgba(14,165,233,0.10);
+    --blue-border: rgba(14,165,233,0.22);
+    --green: #4ade80; --red: #f87171;
+    --text: #F8FAFC; --text-muted: #8896A8;
+    --border: rgba(255,255,255,0.08);
+  }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1.5rem; text-align: center; }
+  .logo { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; }
+  .logo-mark { width: 30px; height: 30px; background: var(--blue); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .logo-text { font-size: 0.9rem; font-weight: 700; }
+  .logo-text span { color: var(--blue); font-weight: 400; }
+  .icon { width: 64px; height: 64px; background: var(--blue-glow); border: 1px solid var(--blue-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.75rem; margin: 0 auto 1.25rem; }
+  h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.5rem; line-height: 1.2; }
+  .sub { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.65; max-width: 300px; }
+  .price-box { background: var(--surface); border: 1px solid var(--blue-border); border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; width: 100%; max-width: 340px; }
+  .price-amount { font-size: 2.5rem; font-weight: 800; color: var(--blue); letter-spacing: -0.04em; line-height: 1; }
+  .price-amount sup { font-size: 1rem; vertical-align: super; }
+  .price-note { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem; }
+  .price-compare { font-size: 0.68rem; color: var(--green); margin-top: 0.5rem; font-weight: 600; }
+  .includes { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; text-align: left; }
+  .include-item { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
+  .include-item .check { color: var(--green); flex-shrink: 0; }
+  input[type="email"] { width: 100%; max-width: 340px; padding: 0.85rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 0.9rem; font-family: 'Inter', sans-serif; margin-bottom: 0.5rem; outline: none; display: block; }
+  input[type="email"]:focus { border-color: var(--blue); }
+  .err { font-size: 0.75rem; color: var(--red); min-height: 1.2rem; margin-bottom: 0.5rem; text-align: left; width: 100%; max-width: 340px; }
+  .btn-pay { width: 100%; max-width: 340px; padding: 0.9rem; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.2s; }
+  .btn-pay:hover { background: var(--blue-dim); }
+  .btn-pay:disabled { opacity: 0.6; cursor: default; }
+  .note { font-size: 0.7rem; color: var(--text-muted); margin-top: 1rem; line-height: 1.6; max-width: 340px; }
+  .note a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="logo">
+  <div class="logo-mark">🔍</div>
+  <div class="logo-text">Schaden<span>·Check</span></div>
+</div>
+
+<div class="icon">🔓</div>
+<h1>Check freischalten</h1>
+<p class="sub">Reparaturkosten · Wertminderung · klare Empfehlung — einmalig, kein Abo.</p>
+
+<div class="price-box">
+  <div class="price-amount"><sup>€</sup>5<span style="font-size:1.2rem;">,99</span></div>
+  <div class="price-note">Einmalig · Sofort nutzbar · Kein Account</div>
+  <div class="price-compare">Werkstatt-Kostenvoranschlag: 50–80 € — du sparst bares Geld</div>
+</div>
+
+<div class="includes">
+  <div class="include-item"><span class="check">✓</span> KI-Schadensanalyse aus Foto</div>
+  <div class="include-item"><span class="check">✓</span> Reparaturkosten-Schätzung</div>
+  <div class="include-item"><span class="check">✓</span> Wertminderung wenn unrepariert</div>
+  <div class="include-item"><span class="check">✓</span> Klare Empfehlung: reparieren oder nicht</div>
+  <div class="include-item"><span class="check">✓</span> PDF-Report zum Mitnehmen</div>
+</div>
+
+<input type="email" id="emailInput" placeholder="deine@email.de" onkeydown="if(event.key==='Enter') startCheckout()">
+<div class="err" id="errMsg"></div>
+<button class="btn-pay" id="payBtn" onclick="startCheckout()">Jetzt für € 5,99 freischalten →</button>
+
+<div class="note">
+  🔒 Sichere Zahlung via Stripe<br>
+  Mit der Zahlung stimmst du unserer <a href="datenschutz.html">Datenschutzerklärung</a> zu.<br>
+  <a href="demo.html">← Demo nochmal ansehen</a> ·
+  <a href="impressum.html">Impressum</a>
+</div>
+
+<script>
+function startCheckout() {
+  var email = document.getElementById('emailInput').value.trim();
+  var btn = document.getElementById('payBtn');
+  var err = document.getElementById('errMsg');
+  err.textContent = '';
+
+  if (!email || email.indexOf('@') === -1) {
+    err.textContent = 'Bitte eine gültige E-Mail eingeben.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Weiterleitung zu Stripe...';
+
+  fetch('https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/schadencheck-checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      err.textContent = 'Fehler: ' + (data.error || 'Unbekannt');
+      btn.disabled = false;
+      btn.textContent = 'Jetzt für € 5,99 freischalten →';
+    }
+  })
+  .catch(function() {
+    err.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
+    btn.disabled = false;
+    btn.textContent = 'Jetzt für € 5,99 freischalten →';
+  });
+}
+</script>
+
+</body>
+</html>

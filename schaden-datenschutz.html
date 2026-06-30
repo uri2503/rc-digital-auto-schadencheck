@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Datenschutz · Schaden-Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #12141A;
+    --bg2:     #1A1D26;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #F8FAFC;
+    --muted:   #8896A8;
+    --accent:  #0EA5E9;
+  }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1.5rem, 5vw, 4rem); height: 60px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-back { font-size: 0.85rem; color: var(--muted); text-decoration: none; font-weight: 500; }
+  .nav-back:hover { color: var(--text); }
+  main { max-width: 680px; margin: 0 auto; padding: 4rem clamp(1.5rem, 5vw, 2rem) 6rem; }
+  .eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+  h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+  .intro { font-size: 0.88rem; color: var(--muted); margin-bottom: 2.5rem; }
+  h2 { font-size: 1rem; font-weight: 700; margin: 2.25rem 0 0.6rem; color: var(--text); }
+  p { font-size: 0.92rem; color: var(--muted); line-height: 1.8; margin-bottom: 0.75rem; }
+  ul { font-size: 0.92rem; color: var(--muted); line-height: 1.8; padding-left: 1.25rem; margin-bottom: 0.75rem; }
+  li { margin-bottom: 0.25rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .block { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+  footer { text-align: center; padding: 2rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Schaden<span>·Check</span></a>
+  <a href="index.html" class="nav-back">← Zurück zur Startseite</a>
+</nav>
+<main>
+  <p class="eyebrow">Rechtliches</p>
+  <h1>Datenschutzerklärung</h1>
+  <p class="intro">Stand: Juni 2026</p>
+
+  <h2>1. Verantwortlicher</h2>
+  <div class="block">
+    Uwe Riedel · rc-digital / Mein-Auto-Assistent.de<br>
+    Esslinger Straße 5 · 73249 Wernau (Neckar)<br>
+    E-Mail: <a href="mailto:info@rc-digital.de">info@rc-digital.de</a><br>
+    Telefon: <a href="tel:+491727409769">+49 172 7409769</a>
+  </div>
+
+  <h2>2. Grundsätze der Datenverarbeitung</h2>
+  <p>Wir verarbeiten personenbezogene Daten nur, soweit dies zur Bereitstellung unserer Dienste erforderlich ist oder Sie ausdrücklich eingewilligt haben. Rechtsgrundlage ist Art. 6 DSGVO.</p>
+
+  <h2>3. Hosting & technische Infrastruktur</h2>
+  <p>Diese Website wird über <strong style="color:var(--text)">GitHub Pages</strong> (GitHub Inc., USA) bereitgestellt. Als Backend-Dienst setzen wir <strong style="color:var(--text)">Supabase</strong> ein (Rechenzentrum: eu-central-1, Frankfurt/Main). Daten werden ausschließlich in der EU verarbeitet.</p>
+
+  <h2>4. Zahlungsabwicklung</h2>
+  <p>Zahlungen werden über <strong style="color:var(--text)">Stripe</strong> (Stripe Payments Europe Ltd., Dublin) abgewickelt. Kreditkartendaten werden ausschließlich durch Stripe verarbeitet und gelangen nicht in unsere Systeme: <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener">stripe.com/de/privacy</a>.</p>
+
+  <h2>5. KI-Verarbeitung (Anthropic Claude)</h2>
+  <p>Schaden-Check nutzt die <strong style="color:var(--text)">Claude API</strong> von Anthropic (San Francisco, USA) zur KI-gestützten Schadens- und Wertminderungsanalyse. Eingaben werden zur Analyse übertragen und nicht dauerhaft gespeichert. Datenschutzinformationen von Anthropic: <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">anthropic.com/privacy</a>.</p>
+
+  <h2>6. Kontaktaufnahme per E-Mail</h2>
+  <p>Wenn Sie uns per E-Mail kontaktieren, werden Ihre Angaben zur Bearbeitung Ihrer Anfrage gespeichert und nach Abschluss der Anfrage gelöscht.</p>
+
+  <hr class="divider">
+
+  <h2>7. Ihre Rechte (DSGVO)</h2>
+  <p>Sie haben das Recht auf:</p>
+  <ul>
+    <li>Auskunft über gespeicherte Daten (Art. 15 DSGVO)</li>
+    <li>Berichtigung unrichtiger Daten (Art. 16 DSGVO)</li>
+    <li>Löschung Ihrer Daten (Art. 17 DSGVO)</li>
+    <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+    <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+    <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+  </ul>
+  <p>Für Anfragen: <a href="mailto:info@rc-digital.de">info@rc-digital.de</a></p>
+
+  <h2>8. Beschwerderecht</h2>
+  <p>Sie haben das Recht, sich bei der Datenschutzaufsichtsbehörde zu beschweren. Für Baden-Württemberg: <a href="https://www.baden-wuerttemberg.datenschutz.de" target="_blank" rel="noopener">Der Landesbeauftragte für den Datenschutz Baden-Württemberg</a>.</p>
+
+  <h2>9. Cookies & lokale Speicherung</h2>
+  <p>Diese Website verwendet keine Tracking-Cookies. Der Zahlungsstatus wird im <strong style="color:var(--text)">localStorage</strong> des Browsers gespeichert und nicht an Dritte übermittelt.</p>
+</main>
+<footer>© 2026 Schaden-Check · Mein-Auto-Assistent.de · Wernau (Neckar)</footer>
+</body>
+</html>
