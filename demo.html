@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Schaden-Check · Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #12141A; --surface: #1A1D26;
+    --blue: #0EA5E9; --blue-dim: #0369A1;
+    --blue-glow: rgba(14,165,233,0.10);
+    --blue-border: rgba(14,165,233,0.22);
+    --green: #4ade80; --amber: #fbbf24; --red: #f87171;
+    --text: #F8FAFC; --text-muted: #8896A8;
+    --border: rgba(255,255,255,0.08);
+  }
+  html, body { height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  .slider { display: flex; width: 400%; height: 100%; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1); }
+  .screen { width: 25%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem 0.75rem; flex-shrink: 0; }
+  .logo { display: flex; align-items: center; gap: 0.5rem; }
+  .logo-mark { width: 26px; height: 26px; background: var(--blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .logo-text { font-size: 0.85rem; font-weight: 700; }
+  .logo-text span { color: var(--blue); font-weight: 400; }
+  .dots { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+  .dot.active { background: var(--blue); width: 18px; border-radius: 3px; }
+
+  .content { flex: 1; padding: 1.25rem 1.5rem 0; display: flex; flex-direction: column; overflow: hidden; gap: 0.7rem; }
+
+  .badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.22rem 0.65rem; border-radius: 100px; align-self: flex-start; }
+  .badge.start  { color: var(--text-muted); background: rgba(255,255,255,0.06); border: 1px solid var(--border); }
+  .badge.amber  { color: var(--amber); background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.25); }
+  .badge.green  { color: var(--green); background: rgba(74,222,128,0.12); border: 1px solid rgba(74,222,128,0.25); }
+
+  h1 { font-size: clamp(1.5rem, 4.5vw, 2.2rem); font-weight: 800; line-height: 1.18; letter-spacing: -0.03em; }
+  h1 .accent { color: var(--blue); }
+  h1 .amber  { color: var(--amber); }
+  h1 .green  { color: var(--green); }
+
+  .lead { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
+
+  .photo-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; position: relative; overflow: hidden; flex-shrink: 0;
+  }
+  .photo-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+    padding: 1.5rem 0.9rem 0.6rem; font-size: 0.72rem; color: rgba(255,255,255,0.85); font-style: italic;
+  }
+
+  .quote-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 0.9rem 1.1rem; font-size: 0.85rem; color: var(--text); line-height: 1.55;
+    font-style: italic; position: relative;
+  }
+  .quote-box::before { content: '"'; font-size: 2rem; color: var(--border); position: absolute; top: -0.3rem; left: 0.5rem; font-family: Georgia, serif; }
+
+  .results { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; overflow: hidden; }
+  .result-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 0.95rem; display: flex; align-items: flex-start; gap: 0.65rem; }
+  .result-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 0.32rem; }
+  .result-dot.gelb { background: var(--amber); }
+  .result-dot.blau { background: var(--blue); }
+  .result-area { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.15rem; }
+  .result-text { font-size: 0.79rem; color: var(--text); line-height: 1.5; }
+
+  /* Großer Vergleich */
+  .compare-box { background: var(--surface); border: 1px solid var(--blue-border); border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .compare-row { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+  .compare-row:last-child { border-bottom: none; padding-top: 0.6rem; margin-top: 0.2rem; border-top: 1px solid var(--blue-border); }
+  .compare-label { color: var(--text-muted); }
+  .compare-val { font-weight: 700; }
+  .compare-val.cost { color: var(--amber); font-size: 1rem; }
+  .compare-val.loss { color: var(--red); font-size: 1rem; }
+  .compare-val.save { color: var(--green); font-size: 1.3rem; }
+
+  .fazit { border-radius: 12px; padding: 1rem 1.1rem; flex-shrink: 0; background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.25); }
+  .fazit-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; color: var(--green); }
+  .fazit-text { font-size: 0.85rem; color: var(--text); line-height: 1.55; }
+  .fazit-text strong { color: var(--green); }
+
+  .bottom-bar { padding: 0.8rem 1.5rem 1.3rem; flex-shrink: 0; }
+  .btn-next { width: 100%; padding: 0.85rem; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: 0.9rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; }
+  .btn-next.green-btn { background: #16a34a; }
+  .skip-link { display: block; text-align: center; font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem; cursor: pointer; }
+
+  .choice-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 0.5rem; }
+  .choice-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; text-decoration: none; color: inherit; display: flex; align-items: center; justify-content: space-between; }
+  .choice-card.primary { border-color: var(--blue-border); background: rgba(14,165,233,0.05); }
+  .choice-left { display: flex; align-items: center; gap: 0.75rem; }
+  .choice-icon { font-size: 1.4rem; }
+  .choice-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.1rem; }
+  .choice-sub   { font-size: 0.72rem; color: var(--text-muted); }
+  .choice-arrow { color: var(--blue); }
+
+  .cta-note { font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; line-height: 1.5; }
+  .cta-note span { color: var(--green); font-weight: 600; }
+  .cta-header h2 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
+  .cta-header p { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem; }
+</style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+  <!-- ══════ SCREEN 1: Der Ausgangspunkt ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🔍</div><div class="logo-text">Schaden<span>·Check</span></div></div>
+      <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="badge start">Der Fall</div>
+      <h1>BMW 1er, 5 Jahre alt.<br><span class="accent">Schramme beim Ausparken.</span></h1>
+
+      <div class="photo-box">
+        🚗
+        <div class="photo-label">Foto: Schramme an der hinteren Stoßstange, ca. 12 cm</div>
+      </div>
+
+      <div class="quote-box">
+        "An einem Poller hängengeblieben beim Ausparken. Hat ja keiner gesehen, ist doch nur 'ne Schramme."
+      </div>
+
+      <p class="lead">Kennst du das? Schauen wir genauer hin, was wirklich dahintersteckt.</p>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(1)">Was die KI wirklich sieht →</button>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 2: Die genaue Analyse ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🔍</div><div class="logo-text">Schaden<span>·Check</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="badge amber">Genauer hingeschaut</div>
+      <h1>Mehr als<br><span class="amber">nur Oberfläche.</span></h1>
+      <p class="lead">Die KI-Analyse erkennt Details, die beim schnellen Blick übersehen werden.</p>
+
+      <div class="results">
+        <div class="result-item">
+          <div class="result-dot gelb"></div>
+          <div><div class="result-area">Schadenstiefe</div><div class="result-text">Die Schramme reicht bis zur Grundierung — Poller-Kontakt drückt oft tiefer ein als sichtbar.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot gelb"></div>
+          <div><div class="result-area">Verdeckte Folgen</div><div class="result-text">Bei diesem Aufprallwinkel können auch Halterungen hinter der Stoßstange leicht verschoben sein.</div></div>
+        </div>
+        <div class="result-item">
+          <div class="result-dot blau"></div>
+          <div><div class="result-area">Sichtbarkeit</div><div class="result-text">Hintere Stoßstange auf Augenhöhe — bei einem 5 Jahre alten BMW erwarten Käufer einen gepflegten Zustand.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(2)">Was bedeutet das in Euro? →</button>
+      <span class="skip-link" onclick="goTo(0)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 3: Die Zahlen — der Aha-Moment ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🔍</div><div class="logo-text">Schaden<span>·Check</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="badge amber">Der Aha-Moment</div>
+      <h1>Aus "nichts" wird<br><span class="amber">eine echte Zahl.</span></h1>
+
+      <div class="compare-box">
+        <div class="compare-row"><span class="compare-label">🔧 Reparatur (Stoßfänger ausbessern)</span><span class="compare-val cost">280 €</span></div>
+        <div class="compare-row"><span class="compare-label">📉 Wertminderung wenn unrepariert</span><span class="compare-val loss">– 520 €</span></div>
+        <div class="compare-row"><span class="compare-label">💰 Du sparst durch Reparatur</span><span class="compare-val save">240 €</span></div>
+      </div>
+
+      <p class="lead">Die Schramme die "keiner gesehen hat", kostet beim Verkauf fast das Doppelte der Reparatur.</p>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next" onclick="goTo(3)">Jetzt meinen eigenen Schaden checken →</button>
+      <span class="skip-link" onclick="goTo(1)">← Zurück</span>
+    </div>
+  </div>
+
+  <!-- ══════ SCREEN 4: CTA ══════ -->
+  <div class="screen">
+    <div class="top-bar">
+      <div class="logo"><div class="logo-mark">🔍</div><div class="logo-text">Schaden<span>·Check</span></div></div>
+      <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+    </div>
+
+    <div class="content">
+      <div class="cta-header">
+        <h2>Genau diese Klarheit<br>bekommst du für deinen Schaden.</h2>
+        <p>Egal wie groß oder klein — du weißt danach was es wirklich kostet.</p>
+      </div>
+
+      <div class="fazit">
+        <div class="fazit-label">Schaden-Check-Versprechen</div>
+        <div class="fazit-text">Reparaturkosten <strong>und</strong> Wertminderung — die vollständige Entscheidungsgrundlage für <strong>5,99 €</strong>.</div>
+      </div>
+
+      <div class="choice-cards">
+        <a href="check.html" class="choice-card primary">
+          <div class="choice-left">
+            <div class="choice-icon">🔍</div>
+            <div>
+              <div class="choice-title">Meinen Check starten</div>
+              <div class="choice-sub">Vollanalyse € 5,99</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+        <a href="index.html" class="choice-card">
+          <div class="choice-left">
+            <div class="choice-icon">←</div>
+            <div>
+              <div class="choice-title">Zur Übersicht</div>
+              <div class="choice-sub">Nochmal alles nachlesen</div>
+            </div>
+          </div>
+          <div class="choice-arrow">→</div>
+        </a>
+      </div>
+
+      <div class="cta-note">
+        <span>✓ Keine Anmeldung</span> · Kein Abo · Einmalig bezahlen<br>
+        Ein Tool von <a href="https://mein-auto-assistent.de" style="color:var(--blue);text-decoration:none;">Mein-Auto-Assistent.de</a>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <button class="btn-next green-btn" onclick="window.location.href='check.html'">Für € 5,99 zum Check →</button>
+      <span class="skip-link" onclick="goTo(2)">← Zurück</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var current = 0;
+function goTo(n) {
+  current = n;
+  document.getElementById('slider').style.transform = 'translateX(-' + (n * 25) + '%)';
+  var allDots = document.querySelectorAll('.dot');
+  for (var i = 0; i < allDots.length; i++) {
+    var dotIdx = i % 4;
+    allDots[i].className = 'dot' + (dotIdx === current ? ' active' : '');
+  }
+}
+var startX = 0;
+document.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; });
+document.addEventListener('touchend', function(e) {
+  var diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0 && current < 3) goTo(current + 1);
+    if (diff < 0 && current > 0) goTo(current - 1);
+  }
+});
+</script>
+
+</body>
+</html>
