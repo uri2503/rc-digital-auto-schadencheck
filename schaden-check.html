@@ -55,7 +55,7 @@
 <p class="sub">Reparaturkosten · Wertminderung · klare Empfehlung — einmalig, kein Abo.</p>
 
 <div class="price-box">
-  <div class="price-amount"><sup>€</sup>5<span style="font-size:1.2rem;">,99</span></div>
+  <div class="price-amount"><sup>€</sup>6<span style="font-size:1.2rem;">,99</span></div>
   <div class="price-note">Einmalig · Sofort nutzbar · Kein Account</div>
   <div class="price-compare">Werkstatt-Kostenvoranschlag: 50–80 € — du sparst bares Geld</div>
 </div>
@@ -70,14 +70,14 @@
 
 <input type="email" id="emailInput" placeholder="deine@email.de" onkeydown="if(event.key==='Enter') startCheckout()">
 <div class="err" id="errMsg"></div>
-<button class="btn-pay" id="payBtn" onclick="startCheckout()">Jetzt für € 5,99 freischalten →</button>
+<button class="btn-pay" id="payBtn" onclick="startCheckout()">Jetzt für € 6,99 freischalten →</button>
 
 <div class="note">
   🔒 Sichere Zahlung via Stripe<br>
   Mit der Zahlung stimmst du unserer <a href="schaden-datenschutz.html">Datenschutzerklärung</a> zu.<br>
   <a href="demo.html">← Demo nochmal ansehen</a> ·
   <a href="schaden-impressum.html">Impressum</a>
-  <br><span style="opacity:0.4;font-size:10px">build 2026-07-06-1</span>
+  <br><span style="opacity:0.4;font-size:10px">build 2026-07-06-2</span>
 </div>
 
 <script>
@@ -107,13 +107,13 @@ function startCheckout() {
     } else {
       err.textContent = 'Fehler: ' + (data.error || 'Unbekannt');
       btn.disabled = false;
-      btn.textContent = 'Jetzt für € 5,99 freischalten →';
+      btn.textContent = 'Jetzt für € 6,99 freischalten →';
     }
   })
   .catch(function() {
     err.textContent = 'Verbindungsfehler. Bitte erneut versuchen.';
     btn.disabled = false;
-    btn.textContent = 'Jetzt für € 5,99 freischalten →';
+    btn.textContent = 'Jetzt für € 6,99 freischalten →';
   });
 }
 </script>
