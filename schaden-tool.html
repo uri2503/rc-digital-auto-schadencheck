@@ -318,8 +318,74 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
   </div>
 </div>
 
+<div class="analysis-overlay" id="accessGate" style="display:flex">
+  <div class="analysis-box">
+    <div class="analysis-icon" id="gateIcon">🔒</div>
+    <div class="analysis-title" id="gateTitle">Zugang wird geprüft …</div>
+    <div class="analysis-sub" id="gateSub">Einen Moment bitte.</div>
+  </div>
+</div>
+
 <script>
 const SUPA_ANON_KEY = 'sb_publishable_v4kXJa0y-2EHsCFPqBFHfg_QvzKLnt2';
+const VERIFY_URL = 'https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/schadencheck-verify';
+
+// ── ZUGRIFFSKONTROLLE ────────────────────────────────────────────────
+// Ohne bestaetigte Zahlung (serverseitig gegen Stripe geprueft) bleibt
+// die Seite gesperrt. Kein Vertrauen auf localStorage allein.
+(function checkAccess() {
+  var params = new URLSearchParams(window.location.search);
+  var sid = params.get('session_id');
+  var serviceKey = params.get('service');
+  var gate = document.getElementById('accessGate');
+  var gateTitle = document.getElementById('gateTitle');
+  var gateSub = document.getElementById('gateSub');
+  var gateIcon = document.getElementById('gateIcon');
+
+  function denyAccess(msg) {
+    gateIcon.textContent = '⛔';
+    gateTitle.textContent = 'Kein Zugang';
+    gateSub.innerHTML = (msg || 'Bitte zuerst den Check freischalten.') + '<br><br><a href="schaden-check.html" style="color:var(--primary)">Jetzt freischalten →</a>';
+  }
+
+  function grantAccess() {
+    gate.style.display = 'none';
+  }
+
+  function verify(body, storeKey) {
+    fetch(VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.paid) {
+        if (storeKey) localStorage.setItem(storeKey.name, storeKey.value);
+        grantAccess();
+      } else {
+        localStorage.removeItem('schadencheck_paid');
+        denyAccess();
+      }
+    }).catch(function() {
+      denyAccess('Verbindungsfehler bei der Zugangsprüfung. Bitte erneut versuchen.');
+    });
+  }
+
+  if (serviceKey) {
+    verify({ service_key: serviceKey });
+    return;
+  }
+  if (sid) {
+    window.history.replaceState(null, '', window.location.pathname);
+    verify({ session_id: sid }, { name: 'schadencheck_paid', value: sid });
+    return;
+  }
+  var stored = localStorage.getItem('schadencheck_paid');
+  if (stored) {
+    verify({ session_id: stored });
+    return;
+  }
+  denyAccess();
+})();
 
 const WERKSTATT = {
   frei:     { label:'Freie Werkstatt',    stundensatz:85,  faktor:1.0 },
