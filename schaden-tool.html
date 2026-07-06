@@ -351,7 +351,7 @@ function esc(s) {
   function denyAccess(msg) {
     gateIcon.textContent = '⛔';
     gateTitle.textContent = 'Kein Zugang';
-    gateSub.innerHTML = (msg || 'Bitte zuerst den Check freischalten.') + '<br><br><a href="schaden-check.html" style="color:var(--primary)">Jetzt freischalten →</a>';
+    gateSub.innerHTML = (msg || 'Bitte zuerst den Check freischalten.') + '<br><br><a href="schaden-check.html" style="color:var(--primary)">Jetzt freischalten →</a><br><br><a href="schaden-faq.html" style="color:var(--grey);font-size:12px">Fragen? Häufige Antworten ansehen</a>';
   }
 
   function grantAccess() {

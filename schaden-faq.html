@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Häufige Fragen · Schaden-Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #12141A;
+    --bg2:     #1A1D26;
+    --border:  rgba(255,255,255,0.08);
+    --text:    #F8FAFC;
+    --muted:   #8896A8;
+    --accent:  #0EA5E9;
+  }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1.5rem, 5vw, 4rem); height: 60px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-back { font-size: 0.85rem; color: var(--muted); text-decoration: none; font-weight: 500; }
+  .nav-back:hover { color: var(--text); }
+  main { max-width: 680px; margin: 0 auto; padding: 4rem clamp(1.5rem, 5vw, 2rem) 6rem; }
+  .eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+  h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.75rem; }
+  .intro { font-size: 0.95rem; color: var(--muted); margin-bottom: 2.5rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  details { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden; }
+  summary { padding: 1.1rem 1.4rem; font-size: 0.95rem; font-weight: 600; cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; color: var(--accent); font-size: 1.3rem; font-weight: 400; margin-left: 1rem; flex-shrink: 0; transition: transform 0.2s; }
+  details[open] summary::after { transform: rotate(45deg); }
+  details[open] summary { border-bottom: 1px solid var(--border); }
+  .faq-answer { padding: 0 1.4rem 1.1rem; font-size: 0.9rem; color: var(--muted); }
+  .faq-answer p { margin-bottom: 0.6rem; }
+  .faq-answer p:last-child { margin-bottom: 0; }
+  .support-box { background: var(--bg2); border: 1px solid var(--accent); border-radius: 10px; padding: 1.5rem 1.75rem; margin-top: 2.5rem; text-align: center; }
+  .support-box p { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem; }
+  .support-box a.btn { display: inline-block; background: var(--accent); color: #fff; padding: 0.7rem 1.5rem; border-radius: 8px; font-weight: 600; font-size: 0.88rem; text-decoration: none; }
+  footer { text-align: center; padding: 2rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Schaden<span>·Check</span></a>
+  <a href="index.html" class="nav-back">← Zurück zur Startseite</a>
+</nav>
+<main>
+  <p class="eyebrow">Support</p>
+  <h1>Häufige Fragen</h1>
+  <p class="intro">Antworten auf die wichtigsten Fragen rund um Kauf, Zugang und Ergebnis. Nichts dabei? Schreib uns einfach.</p>
+
+  <details>
+    <summary>Ich habe bezahlt, komme aber nicht in den Check</summary>
+    <div class="faq-answer">
+      <p>Bitte prüfe zuerst, ob du über den Link aus der Bestätigungsmail eingestiegen bist — der enthält deine Zugangsdaten automatisch. Falls die Mail nicht angekommen ist (auch Spam-Ordner prüfen), schreib uns kurz deine Zahlungs-E-Mail und ungefähre Uhrzeit der Zahlung, dann schalten wir manuell frei.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Kann ich später nochmal auf mein Ergebnis zugreifen?</summary>
+    <div class="faq-answer">
+      <p>Ja, solange du denselben Browser auf demselben Gerät nutzt, bleibt dein Zugang gespeichert. Wechselst du Gerät oder Browser, nutze den Link aus deiner Bestätigungsmail — der stellt den Zugang automatisch wieder her.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Die KI-Schätzung erscheint mir falsch — was jetzt?</summary>
+    <div class="faq-answer">
+      <p>Der Schaden-Check ist eine erste Einschätzung auf Basis deines Fotos, kein rechtsverbindliches Gutachten. Bei größeren oder unklaren Schäden empfehlen wir zusätzlich einen Kostenvoranschlag in einer Werkstatt. Du kannst den Betrag im Tool jederzeit manuell anpassen, falls du eine genauere Einschätzung hast.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Welche Fotos eignen sich am besten?</summary>
+    <div class="faq-answer">
+      <p>Am besten funktionieren 1–3 gut beleuchtete Fotos, die den Schaden aus der Nähe und leicht seitlich zeigen — so ist Tiefe und Ausmaß erkennbar. Unscharfe oder sehr dunkle Fotos führen zu ungenaueren Schätzungen.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Ich möchte eine Rückerstattung</summary>
+    <div class="faq-answer">
+      <p>Schreib uns einfach kurz, was nicht funktioniert hat — wir finden eine faire Lösung. Bei technischen Fehlern (z. B. Analyse ist fehlgeschlagen) erstatten wir grundsätzlich anstandslos.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Was passiert mit meinen hochgeladenen Fotos?</summary>
+    <div class="faq-answer">
+      <p>Deine Fotos werden ausschließlich zur Erstellung deiner Analyse verwendet und nicht an Dritte weitergegeben. Details dazu findest du in unserer <a href="schaden-datenschutz.html">Datenschutzerklärung</a>.</p>
+    </div>
+  </details>
+
+  <div class="support-box">
+    <p>Deine Frage war nicht dabei? Wir antworten in der Regel innerhalb eines Werktags.</p>
+    <a href="mailto:info@rc-digital.de?subject=Schaden-Check%20Support" class="btn">✉️ Support kontaktieren</a>
+  </div>
+</main>
+<footer>© 2026 Schaden-Check · Mein-Auto-Assistent.de · Wernau (Neckar)</footer>
+</body>
+</html>
