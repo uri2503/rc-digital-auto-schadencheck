@@ -88,6 +88,15 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
 .ai-box{background:var(--primary-dim);border:1px solid var(--primary-glow);border-radius:var(--r);padding:14px 16px;font-size:13px;line-height:1.7;color:var(--grey-light);display:none;margin-top:14px}
 .ai-box strong{color:var(--primary);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:6px}
 
+.analysis-overlay{position:fixed;inset:0;background:rgba(18,20,26,.92);z-index:2000;display:none;align-items:center;justify-content:center;padding:24px}
+.analysis-box{max-width:340px;width:100%;text-align:center}
+.analysis-icon{font-size:32px;margin-bottom:16px}
+.analysis-title{font-family:var(--font-display);font-weight:700;font-size:16px;margin-bottom:8px;color:var(--white)}
+.analysis-sub{font-size:12.5px;color:var(--grey);margin-bottom:20px;line-height:1.5}
+.analysis-track{height:6px;border-radius:3px;background:var(--border);overflow:hidden;position:relative}
+.analysis-fill{position:absolute;top:0;left:0;height:100%;width:40%;border-radius:3px;background:var(--primary);animation:analysisSlide 1.4s ease-in-out infinite}
+@keyframes analysisSlide{0%{left:-40%}50%{left:60%}100%{left:100%}}
+
 /* ── RESULT ── */
 #result{display:none}
 .result-header{text-align:center;padding:24px 0 20px}
@@ -96,6 +105,11 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
 
 /* zentrale Vergleichsbox */
 .compare-box{background:var(--card);border:1px solid var(--primary-glow);border-radius:var(--r);padding:22px;margin-bottom:16px}
+
+.result-ai-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:20px;display:none;gap:14px;align-items:flex-start}
+.result-ai-box img{width:64px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--border)}
+.result-ai-label{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey);margin-bottom:4px}
+.result-ai-text{font-size:12.5px;color:var(--grey-light);line-height:1.55}
 .compare-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
 .compare-row:last-child{border-bottom:none;padding-top:14px;margin-top:4px;border-top:1px solid var(--primary-glow)}
 .compare-row .key{color:var(--grey-light)}
@@ -181,7 +195,12 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
               <input type="radio" name="werkstatt" value="marke" onchange="setWerkstatt(this)">
               🏢 Markenwerkstatt
             </label>
+            <label class="pill" id="wt_oldtimer">
+              <input type="radio" name="werkstatt" value="oldtimer" onchange="setWerkstatt(this)">
+              🚗 Oldtimer-Werkstatt
+            </label>
           </div>
+          <div style="font-size:11.5px;color:var(--grey);margin-top:8px" id="werkstattRate">≈ €85/h Stundenverrechnungssatz</div>
         </div>
 
         <div style="margin:14px 0 10px;display:flex;align-items:center;gap:10px">
@@ -196,7 +215,7 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
         </div>
 
         <div class="ai-box" id="aiBox">
-          <strong>KI-Einschätzung</strong>
+          <strong>KI-Einschätzung übernommen</strong>
           <span id="aiText"></span>
         </div>
       </div>
@@ -246,6 +265,14 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
       <h2 id="resultHeadline">Reparieren oder lassen?</h2>
     </div>
 
+    <div class="result-ai-box" id="resultAiBox">
+      <img id="resultAiImg" style="display:none">
+      <div style="flex:1;min-width:0">
+        <div class="result-ai-label">KI-Schadenbericht</div>
+        <div class="result-ai-text" id="resultAiText"></div>
+      </div>
+    </div>
+
     <div class="compare-box">
       <div class="compare-row"><span class="key">🔧 Reparaturkosten</span><span class="val cost" id="resRepairCost">–</span></div>
       <div class="compare-row"><span class="key">📉 Wertminderung wenn unrepariert</span><span class="val loss" id="resValueLoss">–</span></div>
@@ -277,17 +304,27 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
 
 <footer style="padding:24px 20px;text-align:center;margin-top:8px;border-top:1px solid var(--border)">
   <p style="font-size:12px;color:var(--grey)">Schaden-Check &nbsp;·&nbsp; <a href="schaden-impressum.html" style="color:var(--grey);text-decoration:none">Impressum</a> &nbsp;·&nbsp; <a href="schaden-datenschutz.html" style="color:var(--grey);text-decoration:none">Datenschutz</a></p>
-  <p style="opacity:0.4;font-size:10px;margin-top:6px">build 2026-07-06-1</p>
+  <p style="opacity:0.4;font-size:10px;margin-top:6px">build 2026-07-06-2</p>
 </footer>
 
 <div class="toast" id="toast"></div>
+
+<div class="analysis-overlay" id="analysisOverlay">
+  <div class="analysis-box">
+    <div class="analysis-icon">🔍</div>
+    <div class="analysis-title">KI analysiert deinen Schaden …</div>
+    <div class="analysis-sub">Das dauert normalerweise 10–20 Sekunden.</div>
+    <div class="analysis-track"><div class="analysis-fill"></div></div>
+  </div>
+</div>
 
 <script>
 const SUPA_ANON_KEY = 'sb_publishable_v4kXJa0y-2EHsCFPqBFHfg_QvzKLnt2';
 
 const WERKSTATT = {
-  frei:  { label:'Freie Werkstatt', stundensatz:85,  faktor:1.0 },
-  marke: { label:'Markenwerkstatt', stundensatz:125, faktor:1.45 },
+  frei:     { label:'Freie Werkstatt',    stundensatz:85,  faktor:1.0 },
+  marke:    { label:'Markenwerkstatt',    stundensatz:125, faktor:1.45 },
+  oldtimer: { label:'Oldtimer-Werkstatt', stundensatz:140, faktor:1.65 },
 };
 let currentWerkstatt = 'frei';
 
@@ -297,10 +334,14 @@ function setWerkstatt(el) {
     const pill = document.getElementById('wt_' + k);
     if (pill) pill.classList.toggle('active', k === el.value);
   });
+  document.getElementById('werkstattRate').textContent = '≈ €' + WERKSTATT[el.value].stundensatz + '/h Stundenverrechnungssatz';
 }
 
 let currentStep = 1;
 let aiSchadenBetrag = null;
+let aiBeschreibung = '';
+let aiBetragMin = null;
+let aiBetragMax = null;
 let photoBase64Arr = [];
 
 function goStep(n) {
@@ -351,9 +392,7 @@ function handlePhoto(e) {
 }
 
 async function analyzePhoto() {
-  const aiBox = document.getElementById('aiBox');
-  aiBox.style.display = 'block';
-  document.getElementById('aiText').innerHTML = '<span class="spinner"></span> Analysiere Schaden...';
+  showAnalysisOverlay();
 
   try {
     const imageBlocks = photoBase64Arr.map(b64 => ({ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: b64 } }));
@@ -388,14 +427,30 @@ Das ist ein kleinerer Alltagsschaden (Parkrempler, Kratzer, kleine Delle) — ke
     const parsed = JSON.parse(clean);
 
     aiSchadenBetrag = parsed.betrag_max;
+    aiBeschreibung = parsed.beschreibung || '';
+    aiBetragMin = parsed.betrag_min;
+    aiBetragMax = parsed.betrag_max;
     document.getElementById('schadenBetrag').value = parsed.betrag_max;
-    document.getElementById('aiText').innerHTML = `${parsed.beschreibung}<br><strong style="color:var(--white);font-size:15px;display:inline-block;margin-top:6px">≈ €${parsed.betrag_min}–${parsed.betrag_max}</strong>`;
+
+    hideAnalysisOverlay();
+    document.getElementById('aiBox').style.display = 'block';
+    document.getElementById('aiText').innerHTML = `Reparaturbetrag übernommen: <strong style="color:var(--white)">€${parsed.betrag_min}–${parsed.betrag_max}</strong> — Details siehst du im Ergebnis.`;
   } catch (err) {
-    document.getElementById('aiText').textContent = 'Analyse fehlgeschlagen — bitte Betrag manuell eintragen.';
+    hideAnalysisOverlay();
+    toast('Analyse fehlgeschlagen — bitte Betrag manuell eintragen.');
   }
 }
 
-function syncManualInput() { aiSchadenBetrag = null; }
+function showAnalysisOverlay() {
+  const el = document.getElementById('analysisOverlay');
+  if (el) el.style.display = 'flex';
+}
+function hideAnalysisOverlay() {
+  const el = document.getElementById('analysisOverlay');
+  if (el) el.style.display = 'none';
+}
+
+function syncManualInput() { aiSchadenBetrag = null; aiBeschreibung = ''; aiBetragMin = null; aiBetragMax = null; }
 
 function berechne() {
   const schaden = parseFloat(document.getElementById('schadenBetrag').value) || 0;
@@ -440,6 +495,22 @@ function berechne() {
   document.getElementById('breakdownText').innerHTML =
     `Reparaturkosten basierend auf ${WERKSTATT[currentWerkstatt].label} (~€${WERKSTATT[currentWerkstatt].stundensatz}/h). Wertminderung geschätzt auf Basis von Fahrzeugwert, Schadenhöhe und Sichtbarkeit des Schadens. Bei Verkauf oder Inzahlungnahme wirkt sich ein unreparierter Schaden meist stärker aus als die reinen Materialkosten — Käufer kalkulieren zusätzlichen Aufwand und Unsicherheit ein.`;
 
+  const resultAiBox = document.getElementById('resultAiBox');
+  if (aiBeschreibung) {
+    resultAiBox.style.display = 'flex';
+    const img = document.getElementById('resultAiImg');
+    if (photoBase64Arr.length) {
+      img.src = 'data:image/jpeg;base64,' + photoBase64Arr[0];
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+    document.getElementById('resultAiText').innerHTML =
+      `${aiBeschreibung}<br><strong style="color:var(--white);font-size:14px;display:inline-block;margin-top:6px">≈ €${aiBetragMin}–${aiBetragMax}</strong>`;
+  } else {
+    resultAiBox.style.display = 'none';
+  }
+
   document.getElementById('stepSection').style.display = 'none';
   document.getElementById('result').style.display = 'block';
   window.scrollTo({top:0,behavior:'smooth'});
@@ -455,23 +526,187 @@ function resetApp() {
   document.getElementById('imgPreview').innerHTML = '';
   document.getElementById('imgPreview').style.display = 'none';
   document.getElementById('aiBox').style.display = 'none';
+  document.getElementById('resultAiBox').style.display = 'none';
   photoBase64Arr = [];
+  aiBeschreibung = ''; aiBetragMin = null; aiBetragMax = null;
   goStep(1);
+}
+
+function stripEmoji(str) {
+  return (str || '').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{FE0F}]/gu, '').replace(/\s{2,}/g, ' ').trim();
 }
 
 function exportPDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFontSize(18);
-  doc.text('Schaden-Check Report', 20, 20);
-  doc.setFontSize(11);
-  doc.text('Reparaturkosten: ' + document.getElementById('resRepairCost').textContent, 20, 40);
-  doc.text('Wertminderung: ' + document.getElementById('resValueLoss').textContent, 20, 50);
-  doc.text(document.getElementById('recommendLabel').textContent, 20, 65);
-  const text = document.getElementById('recommendText').textContent;
-  const lines = doc.splitTextToSize(text, 170);
-  doc.text(lines, 20, 75);
-  doc.save('schaden-check-report.pdf');
+  if (!jsPDF) { toast('PDF-Bibliothek nicht geladen — bitte kurz warten'); return; }
+
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210; const margin = 18; const contentW = W - margin * 2;
+  let y = 20;
+
+  const COL_GREEN   = [31,  122,  77];
+  const COL_RED     = [178,  58,  52];
+  const COL_AMBER   = [181, 121,  15];
+  const COL_PRIMARY = [27,   58,  92];
+  const COL_BLACK   = [28,   39,  51];
+  const COL_GREY    = [100, 100, 100];
+  const COL_BORDER  = [225, 220, 211];
+
+  function setColor(rgb) { doc.setTextColor(rgb[0], rgb[1], rgb[2]); }
+  function line(x1,y1,x2,y2,rgb) { doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.line(x1,y1,x2,y2); }
+
+  // ── HEADER ──
+  doc.setFillColor(COL_PRIMARY[0], COL_PRIMARY[1], COL_PRIMARY[2]);
+  doc.rect(0, 0, W, 36, 'F');
+  doc.setFillColor(COL_GREEN[0], COL_GREEN[1], COL_GREEN[2]);
+  doc.rect(0, 33, W/3, 3, 'F');
+  doc.setFillColor(COL_AMBER[0], COL_AMBER[1], COL_AMBER[2]);
+  doc.rect(W/3, 33, W/3, 3, 'F');
+  doc.setFillColor(COL_RED[0], COL_RED[1], COL_RED[2]);
+  doc.rect(2*W/3, 33, W/3, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(22);
+  setColor([250,249,246]);
+  doc.text('Schaden-Check', margin, 16);
+  doc.setFontSize(9); doc.setFont('helvetica','normal');
+  setColor([180,195,210]);
+  doc.text('Schadenanalyse & Entscheidungshilfe', margin, 24);
+  doc.text('Erstellt am ' + new Date().toLocaleDateString('de-DE'), W - margin, 24, {align:'right'});
+  y = 46;
+
+  // ── KI-SCHADENBERICHT (nur wenn Foto-Analyse vorlag) ──
+  if (aiBeschreibung) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    setColor(COL_GREY);
+    doc.text('KI-SCHADENBERICHT', margin, y);
+    y += 6;
+    line(margin, y, W - margin, y, COL_BORDER);
+    y += 6;
+
+    let descX = margin, descW = contentW;
+    if (photoBase64Arr.length) {
+      try {
+        const imgW = 42; const imgH = imgW * 0.68;
+        doc.addImage('data:image/jpeg;base64,' + photoBase64Arr[0], 'JPEG', margin, y, imgW, imgH);
+        descX = margin + imgW + 6; descW = contentW - imgW - 6;
+      } catch(e) { console.warn('PDF-Bild-Fehler:', e); }
+    }
+    if (aiBetragMin && aiBetragMax) {
+      doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      setColor(COL_PRIMARY);
+      doc.text(aiBetragMin.toLocaleString('de') + ' – ' + aiBetragMax.toLocaleString('de') + ' ' + String.fromCharCode(8364), descX, y + 5);
+    }
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    setColor([60,60,60]);
+    const descLines = doc.splitTextToSize(stripEmoji(aiBeschreibung), descW).slice(0, 7);
+    doc.text(descLines, descX, y + 12);
+    y += Math.max(photoBase64Arr.length ? 42*0.68 : 0, descLines.length * 4 + 12) + 10;
+  }
+
+  if (y > 150) { doc.addPage(); y = 20; }
+
+  // ── HEADLINE ──
+  const headline = stripEmoji(document.getElementById('resultHeadline').textContent);
+  doc.setFont('helvetica','bold'); doc.setFontSize(15);
+  setColor(COL_PRIMARY);
+  const headlineLines = doc.splitTextToSize(headline, contentW);
+  doc.text(headlineLines, margin, y);
+  y += headlineLines.length * 7 + 6;
+
+  // ── VERGLEICHSBOX ──
+  doc.setFillColor(248,248,248);
+  doc.roundedRect(margin, y, contentW, 34, 2, 2, 'F');
+  doc.setDrawColor(COL_BORDER[0],COL_BORDER[1],COL_BORDER[2]);
+  doc.setLineWidth(0.3);
+  doc.roundedRect(margin, y, contentW, 34, 2, 2, 'S');
+
+  const rowY = [y + 9, y + 18, y + 28];
+  const compareRows = [
+    { key: 'Reparaturkosten', val: document.getElementById('resRepairCost').textContent, color: COL_AMBER },
+    { key: 'Wertminderung wenn unrepariert', val: document.getElementById('resValueLoss').textContent, color: COL_RED },
+    { key: stripEmoji(document.getElementById('resCompareLabel').textContent), val: document.getElementById('resDiff').textContent, color: document.getElementById('resDiff').className.includes('save') ? COL_GREEN : COL_AMBER },
+  ];
+  compareRows.forEach(function(row, i) {
+    doc.setFont('helvetica', i === 2 ? 'bold' : 'normal'); doc.setFontSize(9.5);
+    setColor(COL_BLACK);
+    doc.text(stripEmoji(row.key), margin + 5, rowY[i]);
+    doc.setFont('helvetica','bold'); doc.setFontSize(i === 2 ? 11 : 9.5);
+    setColor(row.color);
+    doc.text(row.val, W - margin - 5, rowY[i], {align:'right'});
+    if (i < 2) line(margin + 5, rowY[i] + 3, W - margin - 5, rowY[i] + 3, COL_BORDER);
+  });
+  y += 42;
+
+  // ── EMPFEHLUNG ──
+  const isRepair = document.getElementById('recommendBox').className.includes('repair');
+  const recColor = isRepair ? COL_GREEN : COL_AMBER;
+  const recBg = isRepair ? [232,247,239] : [253,244,224];
+  const recLabel = stripEmoji(document.getElementById('recommendLabel').textContent);
+  const recText = stripEmoji(document.getElementById('recommendText').textContent);
+
+  doc.setFillColor(recBg[0], recBg[1], recBg[2]);
+  const recTextLines = doc.splitTextToSize(recText, contentW - 8);
+  const recBoxH = 16 + recTextLines.length * 5;
+  doc.roundedRect(margin, y, contentW, recBoxH, 2, 2, 'F');
+  doc.setDrawColor(recColor[0], recColor[1], recColor[2]);
+  doc.setLineWidth(0.5);
+  doc.roundedRect(margin, y, contentW, recBoxH, 2, 2, 'S');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  setColor(recColor);
+  doc.text(recLabel, margin + 5, y + 8);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  setColor(COL_BLACK);
+  doc.text(recTextLines, margin + 5, y + 15);
+  y += recBoxH + 10;
+
+  if (y > 240) { doc.addPage(); y = 20; }
+
+  // ── IM DETAIL ──
+  doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  setColor(COL_GREY);
+  doc.text('IM DETAIL', margin, y);
+  y += 6;
+  line(margin, y, W - margin, y, COL_BORDER);
+  y += 6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+  setColor([60,60,60]);
+  const breakdownLines = doc.splitTextToSize(stripEmoji(document.getElementById('breakdownText').textContent), contentW);
+  doc.text(breakdownLines, margin, y);
+  y += breakdownLines.length * 4.5 + 10;
+
+  if (y > 250) { doc.addPage(); y = 20; }
+
+  // ── DISCLAIMER ──
+  doc.setFillColor(251,243,224);
+  const disclaimerTxt = 'Diese Berechnung ist eine unverbindliche Orientierungshilfe - kein Kostenvoranschlag, kein Gutachten. Tatsaechliche Kosten koennen je nach Schadensumfang und Werkstatt abweichen.';
+  const dlLines = doc.splitTextToSize(disclaimerTxt, contentW - 4);
+  const dlBoxH = 10 + dlLines.length * 4.2;
+  doc.rect(margin - 2, y - 3, contentW + 4, dlBoxH, 'F');
+  doc.setDrawColor(COL_AMBER[0],COL_AMBER[1],COL_AMBER[2]);
+  doc.setLineWidth(0.4);
+  doc.line(margin - 2, y - 3, margin - 2, y - 3 + dlBoxH);
+  doc.setFont('helvetica','bold'); doc.setFontSize(7);
+  setColor(COL_AMBER);
+  doc.text('WICHTIGER HINWEIS', margin + 2, y + 1);
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+  setColor([122,85,0]);
+  doc.text(dlLines, margin + 2, y + 7);
+  y += dlBoxH + 6;
+
+  // ── FOOTER (jede Seite) ──
+  const totalPages = doc.internal.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(240,240,240);
+    doc.rect(0, 282, W, 15, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    setColor([100,100,100]);
+    doc.text('Schaden-Check · mein-auto-assistent.de', margin, 290);
+    doc.text('Seite ' + p + ' / ' + totalPages, W - margin, 290, {align:'right'});
+  }
+
+  const filename = 'Schaden-Check_' + new Date().toISOString().slice(0,10) + '.pdf';
+  doc.save(filename);
+  toast('PDF gespeichert: ' + filename);
 }
 
 function toast(msg) {
