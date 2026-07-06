@@ -330,6 +330,12 @@ nav{display:flex;align-items:center;gap:8px;padding:16px 20px}
 const SUPA_ANON_KEY = 'sb_publishable_v4kXJa0y-2EHsCFPqBFHfg_QvzKLnt2';
 const VERIFY_URL = 'https://ysqzdqazcgyuzdorauiq.supabase.co/functions/v1/schadencheck-verify';
 
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
+}
+
 // ── ZUGRIFFSKONTROLLE ────────────────────────────────────────────────
 // Ohne bestaetigte Zahlung (serverseitig gegen Stripe geprueft) bleibt
 // die Seite gesperrt. Kein Vertrauen auf localStorage allein.
@@ -551,11 +557,11 @@ function berechne() {
   if (repairWins) {
     box.className = 'recommend-box repair';
     label.textContent = '✅ EMPFEHLUNG: REPARIEREN';
-    text.innerHTML = `Bei ${modell} lohnt sich die Reparatur klar. Du sparst <strong>€${diff.toLocaleString('de')}</strong> gegenüber der Wertminderung beim späteren Verkauf.`;
+    text.innerHTML = `Bei ${esc(modell)} lohnt sich die Reparatur klar. Du sparst <strong>€${diff.toLocaleString('de')}</strong> gegenüber der Wertminderung beim späteren Verkauf.`;
   } else {
     box.className = 'recommend-box keep';
     label.textContent = '🤔 EMPFEHLUNG: ABWÄGEN';
-    text.innerHTML = `Bei ${modell} ist die Wertminderung geringer als die Reparaturkosten. Wenn du das Fahrzeug noch lange fährst, kann Reparieren trotzdem sinnvoll sein — für den reinen Verkaufswert lohnt es sich knapp nicht.`;
+    text.innerHTML = `Bei ${esc(modell)} ist die Wertminderung geringer als die Reparaturkosten. Wenn du das Fahrzeug noch lange fährst, kann Reparieren trotzdem sinnvoll sein — für den reinen Verkaufswert lohnt es sich knapp nicht.`;
   }
 
   document.getElementById('breakdownText').innerHTML =
@@ -572,7 +578,7 @@ function berechne() {
       img.style.display = 'none';
     }
     document.getElementById('resultAiText').innerHTML =
-      `${aiBeschreibung}<br><strong style="color:var(--white);font-size:14px;display:inline-block;margin-top:6px">≈ €${aiBetragMin}–${aiBetragMax}</strong>`;
+      `${esc(aiBeschreibung)}<br><strong style="color:var(--white);font-size:14px;display:inline-block;margin-top:6px">≈ €${aiBetragMin}–${aiBetragMax}</strong>`;
   } else {
     resultAiBox.style.display = 'none';
   }
