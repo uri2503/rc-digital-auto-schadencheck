@@ -63,7 +63,7 @@
 
 <div class="price-box">
   <div class="price-amount"><sup>€</sup>6<span style="font-size:1.2rem;">,99</span></div>
-  <div class="price-note">Einmalig · Sofort nutzbar · Kein Account</div>
+  <div class="price-note">Einmalig · inkl. MwSt. · Sofort nutzbar · Kein Account</div>
   <div class="price-compare">Werkstatt-Kostenvoranschlag: 50–80 € — du sparst bares Geld</div>
 </div>
 
@@ -77,11 +77,17 @@
 
 <input type="email" id="emailInput" placeholder="deine@email.de" onkeydown="if(event.key==='Enter') startCheckout()">
 <div class="err" id="errMsg"></div>
-<button class="btn-pay" id="payBtn" onclick="startCheckout()">Jetzt für € 6,99 freischalten →</button>
+
+<div style="text-align:left;display:flex;gap:10px;align-items:flex-start;margin:16px 0" class="consent-box">
+  <input type="checkbox" id="scConsent" onchange="document.getElementById('payBtn').style.opacity=this.checked?'1':'.45';document.getElementById('payBtn').style.pointerEvents=this.checked?'auto':'none'" style="margin-top:3px;flex-shrink:0;width:18px;height:18px">
+  <label for="scConsent" style="font-size:11.5px;color:var(--grey,#666);line-height:1.5;text-align:left">Ich stimme ausdrücklich zu, dass mit der Bereitstellung der digitalen Analyse vor Ablauf der Widerrufsfrist begonnen wird, und bestätige, dass ich dadurch mein Widerrufsrecht verliere (§&nbsp;356 Abs.&nbsp;5 BGB).</label>
+</div>
+
+<button class="btn-pay" id="payBtn" style="opacity:.45;pointer-events:none" onclick="startCheckout()">Jetzt für € 6,99 freischalten →</button>
 
 <div class="note">
   🔒 Sichere Zahlung via Stripe<br>
-  Mit der Zahlung stimmst du unserer <a href="schaden-datenschutz.html">Datenschutzerklärung</a> zu.<br>
+  Mit der Zahlung stimmst du unserer <a href="schaden-datenschutz.html">Datenschutzerklärung</a> und den <a href="schaden-agb.html">AGB</a> zu.<br>
   <a href="demo.html">← Demo nochmal ansehen</a> ·
   <a href="schaden-impressum.html">Impressum</a>
   <br><span style="opacity:0.4;font-size:10px">build 2026-07-06-2</span>

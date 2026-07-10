@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGB · Schaden-Check</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --bg: #12141A; --bg2: #1A1D26; --border: rgba(255,255,255,0.08); --text: #F8FAFC; --muted: #8896A8; --accent: #0EA5E9; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 clamp(1.5rem, 5vw, 4rem); height: 60px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+  .nav-logo { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); text-decoration: none; }
+  .nav-logo span { color: var(--accent); }
+  .nav-back { font-size: 0.85rem; color: var(--muted); text-decoration: none; font-weight: 500; }
+  .nav-back:hover { color: var(--text); }
+  main { max-width: 680px; margin: 0 auto; padding: 4rem clamp(1.5rem, 5vw, 2rem) 6rem; }
+  .eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.75rem; }
+  h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+  .intro { font-size: 0.88rem; color: var(--muted); margin-bottom: 2.5rem; }
+  h2 { font-size: 1rem; font-weight: 700; margin: 2rem 0 0.5rem; color: var(--text); }
+  p { font-size: 0.92rem; color: var(--muted); line-height: 1.8; margin-bottom: 0.75rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .block { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin-top: 0.5rem; }
+  footer { text-align: center; padding: 2rem; font-size: 0.78rem; color: var(--muted); border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Schaden<span>·Check</span></a>
+  <a href="index.html" class="nav-back">← Zurück zur Startseite</a>
+</nav>
+<main>
+  <p class="eyebrow">Rechtliches</p>
+  <h1>Allgemeine Geschäftsbedingungen</h1>
+  <p class="intro">Stand: Juli 2026</p>
+
+  <h2>1. Geltungsbereich &amp; Anbieter</h2>
+  <p>Diese AGB gelten für alle Leistungen von Schaden-Check, einem Angebot von Uwe Riedel, Esslinger Straße 5, 73249 Wernau.</p>
+
+  <h2>2. Leistungsbeschreibung</h2>
+  <p>Schaden-Check bietet eine KI-gestützte Ersteinschätzung von Fahrzeugschäden auf Basis hochgeladener Fotos. Die Analyse liefert eine Schätzung der Reparaturkosten und eine Empfehlung. Es handelt sich um eine unverbindliche Orientierungshilfe, kein Gutachten.</p>
+
+  <h2>3. Preise &amp; Zahlung</h2>
+  <p>Alle angegebenen Preise sind Endpreise inklusive der gesetzlichen Umsatzsteuer. Die Zahlung erfolgt über den Zahlungsdienstleister Stripe. Mit erfolgreicher Zahlung wird der digitale Inhalt sofort freigeschaltet.</p>
+
+  <h2>4. Widerrufsrecht</h2>
+  <div class="block">
+    <p>Verbrauchern steht grundsätzlich ein 14-tägiges Widerrufsrecht zu. Da es sich um digitale Inhalte handelt, erlischt das Widerrufsrecht vorzeitig, sobald die Ausführung des Vertrags begonnen hat, sofern der Kunde ausdrücklich zugestimmt und bestätigt hat, dass er dadurch sein Widerrufsrecht verliert (§&nbsp;356 Abs.&nbsp;5 BGB). Diese Zustimmung wird vor Zahlung im Bestellprozess eingeholt.</p>
+  </div>
+
+  <h2>5. Nutzungsrecht</h2>
+  <p>Mit Kauf erhält der Kunde ein einfaches, nicht übertragbares Recht zur privaten Nutzung des generierten Ergebnisses.</p>
+
+  <h2>6. Haftungsbeschränkung</h2>
+  <p>Die Analyse basiert auf KI-gestützter Bildauswertung und ersetzt keine Begutachtung durch einen Sachverständigen oder eine Werkstatt. Für die Richtigkeit der Kostenschätzung wird keine Gewähr übernommen.</p>
+
+  <h2>7. Verfügbarkeit</h2>
+  <p>Wir bemühen uns um eine hohe Verfügbarkeit des Dienstes. Ein Anspruch auf ununterbrochene Verfügbarkeit besteht nicht.</p>
+
+  <h2>8. Schlussbestimmungen</h2>
+  <p>Es gilt deutsches Recht. Sollte eine Bestimmung dieser AGB unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
+</main>
+<footer>© 2026 Schaden-Check · Mein-Auto-Assistent.de · Wernau (Neckar)</footer>
+</body>
+</html>
